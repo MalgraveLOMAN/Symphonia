@@ -26,6 +26,7 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/signup$, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: ROLE_USER }
 
 when@test:

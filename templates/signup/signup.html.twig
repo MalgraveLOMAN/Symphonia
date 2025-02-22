@@ -1,0 +1,25 @@
+{# templates/signup/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <h1>Inscription</h1>
+
+    {# Messages flash #}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {# Formulaire d'inscription #}
+    {{ form_start(form) }}
+    {{ form_row(form.name, {'label': 'Nom'}) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.password, {'label': 'Mot de passe'}) }}
+
+    <button type="submit">S'inscrire</button>
+    {{ form_end(form) }}
+
+    <p>Déjà inscrit ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+    <a href="{{ path('app_index') }}">Retour à l'accueil</a>
+{% endblock %}

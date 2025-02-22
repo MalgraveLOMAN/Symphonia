@@ -1,9 +1,23 @@
+{# templates/login/login.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Symphonia - Home{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
-    <div>
-        <h1>Login</h1>
-    </div>
+    <h1>Connexion</h1>
+
+    <form method="post" action="{{ path('app_login') }}">
+        <label for="inputEmail">Email</label>
+        <input type="email" name="email" id="inputEmail" required>
+
+        <label for="inputPassword">Mot de passe</label>
+        <input type="password" name="password" id="inputPassword" required>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <p>Pas de compte ? <a href="{{ path('app_signup') }}">S'inscrire</a></p>
+    <a href="{{ path('app_index') }}">Retour à l'accueil</a>
 {% endblock %}
