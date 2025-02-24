@@ -5,12 +5,15 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface, \Symfony\Component\Security\Core\User\UserInterface
+class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,6 +29,64 @@ class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticate
     private array $roles = ["ROLE_USER"];
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $profilePicture = null;
+
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
+    private Collection $participatedEvents;
+
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'organizer')]
+    private Collection $organizedEvents;
+    public function __construct()
+    {
+        $this->participatedEvents = new ArrayCollection();
+        $this->organizedEvents = new ArrayCollection();
+
+    }
+
+    public function getOrganizedEvents(): Collection
+    {
+        return $this->organizedEvents;
+    }
+
+    public function addOrganizedEvent(Event $event): self
+    {
+        if (!$this->organizedEvents->contains($event)) {
+            $this->organizedEvents->add($event);
+            $event->setOrganizer($this);
+        }
+        return $this;
+    }
+
+    public function removeOrganizedEvent(Event $event): self
+    {
+        if ($this->organizedEvents->removeElement($event)) {
+            if ($event->getOrganizer() === $this) {
+                $event->setOrganizer(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getParticipatedEvents(): Collection
+    {
+        return $this->participatedEvents;
+    }
+
+    public function addParticipatedEvent(Event $event): self
+    {
+        if (!$this->participatedEvents->contains($event)) {
+            $this->participatedEvents->add($event);
+            $event->addParticipant($this);
+        }
+        return $this;
+    }
+
+    public function removeParticipatedEvent(Event $event): self
+    {
+        if ($this->participatedEvents->removeElement($event)) {
+            $event->removeParticipant($this);
+        }
+        return $this;
+    }
 
     public function getId(): ?int
     {
@@ -67,8 +128,7 @@ class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticate
 
     public function getRoles(): array
     {
-        $roles[] = 'ROLE_USER';
-        return $this->roles;
+        return array_unique($this->roles);
     }
 
     public function setRoles(array $roles): self
@@ -77,11 +137,13 @@ class User implements \Symfony\Component\Security\Core\User\PasswordAuthenticate
         return $this;
     }
 
-    public function getProfilePicture(): ?string {
+    public function getProfilePicture(): ?string
+    {
         return $this->profilePicture;
     }
 
-    public function setProfilePicture(?string $profilePicture): self {
+    public function setProfilePicture(?string $profilePicture): self
+    {
         $this->profilePicture = $profilePicture;
         return $this;
     }

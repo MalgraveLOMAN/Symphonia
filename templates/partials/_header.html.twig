@@ -1,0 +1,13 @@
+<header>
+    <h1>Header</h1>
+    {% if is_granted('ROLE_ADMIN') %}
+        <p>Connecté en tant que {{ app.user.name }} (ADMIN)</p>
+        <a href="{{ path('app_logout') }}">Se déconnecter</a>
+    {% elseif is_granted('ROLE_USER') %}
+        <p>Connecté en tant que {{ app.user.name }}</p>
+        <a href="{{ path('app_logout') }}">Se déconnecter</a>
+    {% else %}
+        <p>Vous n'êtes pas connecté</p>
+        <a href="{{ path('app_login') }}">Login to get the full experience</a>
+    {% endif %}
+</header>
