@@ -35,6 +35,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'organizer')]
     private Collection $organizedEvents;
+
     public function __construct()
     {
         $this->participatedEvents = new ArrayCollection();

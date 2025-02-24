@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class indexController extends AbstractController
+class indexController extends AbstractController
 {
     #[Route('/', name: 'app_index')]
     public function index(): Response

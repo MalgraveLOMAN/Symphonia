@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.name }} - Symphonia{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>{{ event.name }}</h1>
+        <p>ID : {{ event.id }}</p>
+        <a href="{{ path('app_event_index') }}">Retour à la liste des event</a>
+    </div>
+{% endblock %}
