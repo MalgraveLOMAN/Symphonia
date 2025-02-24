@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Events - Symphonia{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>Liste des Events</h1>
+        {% if events is empty %}
+            <p>Aucun Event trouvé.</p>
+        {% else %}
+            <ul>
+                {% for event in events %}
+                    <a href="{{ path('app_event_details', {'id': event.id}) }}">{{ event.name }}</a>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endblock %}

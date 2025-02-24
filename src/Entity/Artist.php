@@ -16,7 +16,7 @@ class Artist
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $nom = null;
+    private ?string $name = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
@@ -37,14 +37,14 @@ class Artist
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->nom;
+        return $this->name;
     }
 
-    public function setNom(string $nom): self
+    public function setName(string $name): self
     {
-        $this->nom = $nom;
+        $this->name = $name;
         return $this;
     }
 
