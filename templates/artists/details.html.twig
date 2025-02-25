@@ -5,7 +5,38 @@
 {% block body %}
     <div>
         <h1>{{ artist.name }}</h1>
-        <p>ID : {{ artist.id }}</p>
-        <a href="{{ path('app_artist_index') }}">Retour à la liste des artistes</a>
+
+        {% if artist.description %}
+            <p>{{ artist.description|raw }}</p>
+        {% else %}
+            <p><em>Aucune description disponible.</em></p>
+        {% endif %}
+
+        {% if artist.image %}
+            <div>
+                <img src="{{ asset('uploads/artist_pictures/' ~ artist.image) }}"
+                     alt="{{ artist.name }}">
+            </div>
+        {% else %}
+            <p><em>Aucune image disponible.</em></p>
+        {% endif %}
+
+            {% if artist.events is not empty %}
+                <ul>
+                    {% for event in artist.events %}
+                        <li>
+                            <a href="{{ path('app_event_details', {'id': event.id}) }}">
+                                {{ event.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p><em>Aucun event</em></p>
+            {% endif %}
+
+        <a href="{{ path('app_artist_index') }}" class="btn btn-secondary mt-3">
+            Retour à la liste des artistes
+        </a>
     </div>
 {% endblock %}

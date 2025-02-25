@@ -3,11 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Artist;
-use App\Entity\Event;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File; // Ajoute cette ligne
 
 class ArtistFormType extends AbstractType
 {
@@ -16,7 +16,22 @@ class ArtistFormType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('image');
+            ->add('image', FileType::class, [
+                'label' => 'Image de l\'artiste',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5m',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Format invalid',
+                    ])
+                ],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

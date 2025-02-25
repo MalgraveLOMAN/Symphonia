@@ -1,13 +1,31 @@
-<header>
-    <h1>Header</h1>
-    {% if is_granted('ROLE_ADMIN') %}
-        <p>Connecté en tant que {{ app.user.name }} (ADMIN)</p>
-        <a href="{{ path('app_logout') }}">Se déconnecter</a>
-    {% elseif is_granted('ROLE_USER') %}
-        <p>Connecté en tant que {{ app.user.name }}</p>
-        <a href="{{ path('app_logout') }}">Se déconnecter</a>
-    {% else %}
-        <p>Vous n'êtes pas connecté</p>
-        <a href="{{ path('app_login') }}">Login to get the full experience</a>
-    {% endif %}
+<header class="main-header">
+        <h1>Symphonia</h1>
+
+        <nav>
+            {% if is_granted('ROLE_USER') %}
+                <span>
+                    Connecté en tant que {{ app.user.name }}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <span>(ADMIN)</span>
+                    {% endif %}
+                </span>
+                <ul>
+                    <li><a href="{{ path('app_artist_index') }}">
+                            Liste des artistes</a></li>
+                    <li><a href="{{ path('app_event_index') }}">
+                            Liste des événements</a></li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('app_users_index') }}">
+                                Liste des membres</a></li>
+                    {% endif %}
+                    <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                </ul>
+            {% else %}
+                <span>Vous n'êtes pas connecté</span>
+                <ul>
+                    <li><a href="{{ path('app_login') }}">Connexion</a></li>
+                </ul>
+            {% endif %}
+        </nav>
+    </div>
 </header>

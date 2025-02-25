@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.name }} - Symphonia{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>{{ user.name }}</h1>
+        <p>ID : {{ user.id }}</p>
+        <a href="{{ path('app_users_index') }}">Retour à la liste des users</a>
+    </div>
+{% endblock %}

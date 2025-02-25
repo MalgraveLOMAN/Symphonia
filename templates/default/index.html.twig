@@ -4,4 +4,24 @@
 
 {% block body %}
     <h1>Index</h1>
+    {% if user %}
+        {% include 'partials/_new_event.html.twig' %}
+        {% include 'partials/_edit_event.html.twig' %}
+        {% include 'partials/_new_artist.html.twig' %}
+        {% include 'partials/_edit_artist.html.twig' %}
+        {% if participatedEvents|length > 0 %}
+            <h3>Your Participated Events:</h3>
+            <ul>
+                {% for event in participatedEvents %}
+                    <li>
+                        {{ event.name }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You are not participating in any events yet.</p>
+        {% endif %}
+    {% else %}
+        <p>Please log in to see your events.</p>
+    {% endif %}
 {% endblock %}

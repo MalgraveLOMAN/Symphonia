@@ -12,8 +12,12 @@ class indexController extends AbstractController
     public function index(): Response
     {
         $user = $this->getUser();
+        $participatedEvents = $user ? $user->getParticipatedEvents() : [];
+
         return $this->render('default/index.html.twig', [
-            "user" => $user
+            "user" => $user,
+            'participatedEvents' => $participatedEvents
+
         ]);
     }
 }
