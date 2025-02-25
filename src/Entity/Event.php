@@ -20,7 +20,7 @@ class Event
     #[ORM\Column(type: 'string', length: 255)]
     private string $name;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'date')]
     private DateTimeInterface $date;
 
     #[ORM\Column(type: 'text')]

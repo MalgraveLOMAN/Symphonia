@@ -6,6 +6,7 @@ use App\Entity\Artist;
 use App\Form\ArtistFormType;
 use App\Repository\ArtistRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,6 +48,21 @@ class ArtistController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
+
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('artist_pictures_directory'),
+                        $newFilename
+                    );
+                } catch (Exception) {
+                }
+
+                $artist->setImage($newFilename);
+            }
             $entityManager->persist($artist);
             $entityManager->flush();
             return $this->redirectToRoute('app_artist_index');

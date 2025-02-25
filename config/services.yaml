@@ -7,6 +7,7 @@ parameters:
     profile_pictures_directory: '%kernel.project_dir%/public/uploads/profile_pictures'
     event_pictures_directory: '%kernel.project_dir%/public/uploads/event_pictures'
     music_pictures_directory: '%kernel.project_dir%/public/uploads/music_pictures'
+    artist_pictures_directory: '%kernel.project_dir%/public/uploads/artist_pictures'
 
 
 services:

@@ -8,8 +8,10 @@ use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class EventFormType extends AbstractType
 {
@@ -29,7 +31,22 @@ class EventFormType extends AbstractType
             ])
             ->add('description')
             ->add('location')
-            ->add('image')
+            ->add('image', FileType::class, [
+                'label' => 'Image de l\'artiste',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5m',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Format invalid',
+                    ])
+                ],
+            ])
             ->add('artists', EntityType::class, [
                 'class' => Artist::class,
                 'choice_label' => 'name',

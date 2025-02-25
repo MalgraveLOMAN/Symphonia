@@ -3,9 +3,58 @@
 {% block title %}{{ event.name }} - Symphonia{% endblock %}
 
 {% block body %}
-    <div>
+    <div class="container mt-4">
         <h1>{{ event.name }}</h1>
-        <p>ID : {{ event.id }}</p>
-        <a href="{{ path('app_event_index') }}">Retour à la liste des event</a>
+
+        {% if event.organizer %}
+            {{ event.organizer.name }}</p>
+        {% else %}
+            <p><em>Aucun organisateur spécifié.</em></p>
+        {% endif %}
+
+        {% if event.date %}
+            <p>{{ event.date|date('d/m/Y') }}</p>
+        {% else %}
+            <p><em>Aucune date spécifiée.</em></p>
+        {% endif %}
+
+        {% if event.description %}
+            <p>{{ event.description|raw }}</p>
+        {% else %}
+            <p><em>Aucune description disponible.</em></p>
+        {% endif %}
+
+        {% if event.location %}
+            <p>{{ event.location }}</p>
+        {% else %}
+            <p><em>Aucun lieu.</em></p>
+        {% endif %}
+
+        {% if event.image %}
+            <div>
+                <img src="{{ asset('uploads/event_pictures/' ~ event.image) }}"
+                     alt="{{ event.name }}"
+            </div>
+        {% else %}
+            <p><em>Aucune image disponible.</em></p>
+        {% endif %}
+
+        {% if event.artists is not empty %}
+            <ul>
+                {% for artist in event.artists %}
+                    <li>
+                        <a href="{{ path('app_artist_details', {'id': artist.id}) }}">
+                            {{ artist.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p><em>Aucun artiste</em></p>
+        {% endif %}
+
+        <a href="{{ path('app_event_index') }}" class="btn btn-secondary mt-3">
+            Retour à la liste des événements
+        </a>
     </div>
 {% endblock %}

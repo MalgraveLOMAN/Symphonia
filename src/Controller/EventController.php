@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Form\EventFormType;
 use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,9 +52,24 @@ class EventController extends AbstractController
 
             $event->setOrganizer($organizer);
             $event->addParticipant($organizer);
+            $imageFile = $form->get('image')->getData();
 
-            $entityManager->persist($event);
-            $entityManager->flush();
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('event_pictures_directory'),
+                        $newFilename
+                    );
+                } catch (Exception) {
+                }
+
+                $event->setImage($newFilename);
+                $entityManager->persist($event);
+                $entityManager->flush();
+            }
+
 
             return $this->redirectToRoute('app_event_index');
         }
