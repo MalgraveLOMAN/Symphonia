@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profil{% endblock %}
+
+{% block body %}
+    <h1>Edit</h1>
+
+    {{ form_errors(form) }}
+
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+
+    {{ form_row(form.email) }}
+
+
+    {{ form_row(form.profilePicture) }}
+
+
+    <button type="submit" class="btn">Edit</button>
+    {{ form_end(form) }}
+
+{% endblock %}

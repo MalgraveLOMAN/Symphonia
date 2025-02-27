@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ event.name }} - Symphonia{% endblock %}
+
+{% block body %}
+    <h1>Modifier {{ event.name }}</h1>
+
+    {{ form_start(form) }}
+
+    {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+
+    {{ form_row(form.date, {'attr': {'class': 'form-control'}}) }}
+
+    {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+
+    {{ form_row(form.location, {'attr': {'class': 'form-control'}}) }}
+
+    {{ form_row(form.image, {'attr': {'class': 'form-control'}}) }}
+    {% if event.image %}
+        Image actuelle :
+        <img src="{{ asset('uploads/event_pictures/' ~ event.image) }}"
+             alt="{{ event.name }}"
+    {% endif %}
+
+    {{ form_row(form.artists, {'attr': {'class': 'form-control'}}) }}
+
+    {{ form_widget(form.organizer, {'attr': {'style': 'display: none;'}}) }}
+
+    <button type="submit" class="btn btn-primary">Mettre à jour</button>
+    <a href="{{ path('app_event_index') }}" class="btn btn-secondary">
+        Retour à la liste des événements
+    </a>
+
+    {{ form_end(form) }}
+
+    {{ form_errors(form) }}
+{% endblock %}

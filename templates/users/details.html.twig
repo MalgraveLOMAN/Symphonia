@@ -6,6 +6,20 @@
     <div>
         <h1>{{ user.name }}</h1>
         <p>ID : {{ user.id }}</p>
+        {{ user.name }}
+        {{ user.email }}
+        {{ user.profilePicture }}
+        <div>
+            <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}"
+                 alt="{{ user.name }}">
+        </div>
+        {% if user == app.user %}
+            <a href="{{ path('app_users_edit', {'id': user.id}) }}">
+                Edit User
+            </a>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_users_index') }}">Retour à la liste des users</a>
+        {% endif %}
     </div>
 {% endblock %}

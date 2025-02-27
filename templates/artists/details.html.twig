@@ -21,20 +21,24 @@
             <p><em>Aucune image disponible.</em></p>
         {% endif %}
 
-            {% if artist.events is not empty %}
-                <ul>
-                    {% for event in artist.events %}
-                        <li>
-                            <a href="{{ path('app_event_details', {'id': event.id}) }}">
-                                {{ event.name }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p><em>Aucun event</em></p>
-            {% endif %}
-
+        {% if artist.events is not empty %}
+            <ul>
+                {% for event in artist.events %}
+                    <li>
+                        <a href="{{ path('app_event_details', {'id': event.id}) }}">
+                            {{ event.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p><em>Aucun event</em></p>
+        {% endif %}
+        {% if is_granted("ROLE_ADMIN") %}
+            <a href="{{ path('app_artist_edit', {'id': artist.id}) }}">
+                Edit Artist
+            </a>
+        {% endif %}
         <a href="{{ path('app_artist_index') }}" class="btn btn-secondary mt-3">
             Retour à la liste des artistes
         </a>

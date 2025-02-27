@@ -3,21 +3,19 @@
 {% block title %}Créer un nouvel événement{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1>Créer un nouvel événement</h1>
+    <h1>Créer un nouvel événement</h1>
 
-        {{ form_start(EventForm) }}
-        {{ form_row(EventForm.name) }}
-        {{ form_row(EventForm.date) }}
-        {{ form_row(EventForm.description) }}
-        {{ form_row(EventForm.location) }}
-        {{ form_row(EventForm.image) }}
-        {{ form_row(EventForm.artists) }}
-        {{ form_widget(EventForm.organizer, {'attr': {'style': 'display: none;'}}) }}
+    {{ form_start(EventForm) }}
+    {{ form_row(EventForm.name) }}
+    {{ form_row(EventForm.date) }}
+    {{ form_row(EventForm.description) }}
+    {{ form_row(EventForm.location) }}
+    {{ form_row(EventForm.image) }}
+    {{ form_row(EventForm.artists) }}
+    {{ form_widget(EventForm.organizer, {'attr': {'style': 'display: none;'}}) }}
 
-        <button type="submit" class="btn btn-primary">Créer</button>
-        {{ form_end(EventForm) }}
+    <button type="submit" class="btn btn-primary">Créer</button>
+    {{ form_end(EventForm) }}
 
-        {{ form_errors(EventForm) }}
-    </div>
+    {{ form_errors(EventForm) }}
 {% endblock %}

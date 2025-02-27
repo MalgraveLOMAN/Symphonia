@@ -3,15 +3,13 @@
 {% block title %}Créer un nouvel Artiste{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1>Créer un nouvel événement</h1>
+    <h1>Créer un nouvel Artiste</h1>
 
-        {{ form_start(ArtistForm) }}
-        {{ form_row(ArtistForm.name) }}
-        {{ form_row(ArtistForm.description) }}
-        {{ form_row(ArtistForm.image) }}
-        <button type="submit" class="btn btn-primary">Créer</button>
-        {{ form_end(ArtistForm) }}
-        {{ form_errors(ArtistForm) }}
-    </div>
+    {{ form_start(ArtistForm) }}
+    {{ form_row(ArtistForm.name) }}
+    {{ form_row(ArtistForm.description) }}
+    {{ form_row(ArtistForm.image) }}
+    <button type="submit" class="btn btn-primary">Créer</button>
+    {{ form_end(ArtistForm) }}
+    {{ form_errors(ArtistForm) }}
 {% endblock %}

@@ -52,7 +52,11 @@
         {% else %}
             <p><em>Aucun artiste</em></p>
         {% endif %}
-
+        {% if event.organizer == app.user %}
+            <a href="{{ path('app_event_edit', {'id': event.id}) }}">
+                Edit Event
+            </a>
+        {% endif %}
         <a href="{{ path('app_event_index') }}" class="btn btn-secondary mt-3">
             Retour à la liste des événements
         </a>

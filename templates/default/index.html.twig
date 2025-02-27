@@ -6,15 +6,15 @@
     <h1>Index</h1>
     {% if user %}
         {% include 'partials/_new_event.html.twig' %}
-        {% include 'partials/_edit_event.html.twig' %}
         {% include 'partials/_new_artist.html.twig' %}
-        {% include 'partials/_edit_artist.html.twig' %}
         {% if participatedEvents|length > 0 %}
-            <h3>Your Participated Events:</h3>
+            <h3>Events inscrits : :</h3>
             <ul>
                 {% for event in participatedEvents %}
                     <li>
-                        {{ event.name }}
+                        <a href="{{ path('app_event_details', {'id': event.id}) }}">
+                            {{ event.name }}
+                        </a>
                     </li>
                 {% endfor %}
             </ul>

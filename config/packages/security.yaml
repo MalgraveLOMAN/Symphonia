@@ -43,10 +43,11 @@ security:
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^/login$, roles: PUBLIC_ACCESS }
         - { path: ^/register$, roles: PUBLIC_ACCESS }
-        - { path: ^/logout, roles : PUBLIC_ACCESS }
+        - { path: ^/logout, roles: PUBLIC_ACCESS }
+        - { path: ^/artists/.*/edit, roles: ROLE_ADMIN }
         - { path: ^/, roles: ROLE_USER }
     role_hierarchy:
-        ROLE_ADMIN : ROLE_USER
+        ROLE_ADMIN: ROLE_USER
 when@test:
     security:
         password_hashers:

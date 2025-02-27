@@ -3,20 +3,18 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <div class="container">
+        <h1>Register</h1>
 
-    {{ form_errors(registrationForm) }}
+        {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-    {{ form_row(registrationForm.name) }}
+        {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.name, { 'label_attr': {'class': 'log-reg-label'} }) }}
+        {{ form_row(registrationForm.email, { 'label_attr': {'class': 'log-reg-label'} }) }}
+        {{ form_row(registrationForm.plainPassword, { label: 'Password', 'label_attr': {'class': 'log-reg-label'} }) }}
+        <button type="submit" class="btn">Register</button>
+        {{ form_end(registrationForm) }}
 
-    {{ form_row(registrationForm.email) }}
-
-    {{ form_row(registrationForm.plainPassword, {
-        label: 'Password'
-    }) }}
-
-    <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
-    <p>Déjà inscrit ? <a href="{{ path("app_login") }}">Me connecter</a></p>
+        <p>Déjà inscrit ? <a href="{{ path('app_login') }}">Me connecter</a></p>
+    </div>
 {% endblock %}
