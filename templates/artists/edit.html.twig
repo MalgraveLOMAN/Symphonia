@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ artist.name }} - Symphonia{% endblock %}
+
+{% block body %}
+    <h1>Modifier {{ artist.name }}</h1>
+
+    {{ form_start(form) }}
+
+    {{ form_label(form.name) }}
+    {{ form_widget(form.name) }}
+    {{ form_errors(form.name) }}
+
+    {{ form_label(form.description) }}
+    {{ form_widget(form.description) }}
+    {{ form_errors(form.description) }}
+
+    {% if form.image is defined %}
+        {{ form_label(form.image) }}
+        {{ form_widget(form.image) }}
+        {{ form_errors(form.image) }}
+        {% if artist.image %}
+            Image actuelle :
+            <img src="{{ asset('uploads/artist_pictures/' ~ artist.image) }}"
+                 alt="{{ artist.name }}">
+
+        {% endif %}
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary">Mettre à jour</button>
+    <a href="{{ path('app_artist_index') }}" class="btn btn-secondary">
+        Retour à la liste des artistes
+    </a>
+
+    {{ form_end(form) }}
+{% endblock %}

@@ -25,7 +25,7 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/events/{id}', name: 'details')]
+    #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'])]
     public function show(int $id, EventRepository $eventRepository): Response
     {
         $event = $eventRepository->find($id);
@@ -36,6 +36,32 @@ class EventController extends AbstractController
 
         return $this->render('events/details.html.twig', [
             'event' => $event,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'])]
+    public function edit(int $id, EventRepository $eventRepository, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $event = $eventRepository->find($id);
+
+        if (!$event) {
+            throw $this->createNotFoundException('Event non trouvé pour l\'ID ' . $id);
+        }
+        $currentUser = $this->getUser();
+
+        if ($currentUser !== $event->getOrganizer()) {
+            return $this->redirectToRoute('app_event_details', ['id' => $event->getId()]);
+        }
+        $form = $this->createForm(EventFormType::class, $event);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            return $this->redirectToRoute('app_event_details', ['id' => $event->getId()]);
+        }
+
+        return $this->render('events/edit.html.twig', [
+            'event' => $event,
+            'form' => $form->createView(),
         ]);
     }
 

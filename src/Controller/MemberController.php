@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserFormType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -23,7 +25,30 @@ class MemberController extends AbstractController
             'users' => $users,
         ]);
     }
-    #[Route('/users/{id}', name: 'details')]
+
+    #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'])]
+    public function edit(int $id, UserRepository $userRepository, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $userRepository->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('User non trouvé pour l\'ID ' . $id);
+        }
+
+        $form = $this->createForm(UserFormType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            return $this->redirectToRoute('app_users_details', ['id' => $user->getId()]);
+        }
+
+        return $this->render('users/edit.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/{id}', name: 'details')]
     public function show(int $id, UserRepository $userRepository): Response
     {
         $user = $userRepository->find($id);

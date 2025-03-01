@@ -25,7 +25,7 @@ class ArtistController extends AbstractController
         ]);
     }
 
-    #[Route('/artist/{id}', name: 'details')]
+    #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'])]
     public function show(int $id, ArtistRepository $artistRepository): Response
     {
         $artist = $artistRepository->find($id);
@@ -38,6 +38,29 @@ class ArtistController extends AbstractController
             'artist' => $artist,
         ]);
     }
+
+    #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'])]
+    public function edit(int $id, ArtistRepository $artistRepository, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $artist = $artistRepository->find($id);
+
+        if (!$artist) {
+            throw $this->createNotFoundException('Artiste non trouvé pour l\'ID ' . $id);
+        }
+
+        $form = $this->createForm(ArtistFormType::class, $artist);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            return $this->redirectToRoute('app_artist_details', ['id' => $artist->getId()]);
+        }
+
+        return $this->render('artists/edit.html.twig', [
+            'artist' => $artist,
+            'form' => $form->createView(),
+        ]);
+    }
+
 
     #[Route('/new', name: 'new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
