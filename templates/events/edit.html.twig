@@ -7,6 +7,8 @@
 
     {{ form_start(form) }}
 
+    {{ form_errors(form) }}
+
     {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
 
     {{ form_row(form.date, {'attr': {'class': 'form-control'}}) }}
@@ -16,10 +18,12 @@
     {{ form_row(form.location, {'attr': {'class': 'form-control'}}) }}
 
     {{ form_row(form.image, {'attr': {'class': 'form-control'}}) }}
+
     {% if event.image %}
-        Image actuelle :
+        <p>Image actuelle :</p>
         <img src="{{ asset('uploads/event_pictures/' ~ event.image) }}"
              alt="{{ event.name }}"
+             style="max-width: 200px; height: auto;">
     {% endif %}
 
     {{ form_row(form.artists, {'attr': {'class': 'form-control'}}) }}
@@ -33,5 +37,10 @@
 
     {{ form_end(form) }}
 
-    {{ form_errors(form) }}
+    {# Formulaire de suppression #}
+    <form action="{{ path('app_event_delete', {'id': event.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');" style="margin-top: 20px;">
+        <input type="hidden" name="_method" value="DELETE">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+        <button type="submit" class="btn btn-danger">Supprimer l'événement</button>
+    </form>
 {% endblock %}
