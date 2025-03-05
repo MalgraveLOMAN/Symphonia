@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Filesystem\Filesystem;
 
 #[Route('/users', name: 'app_users_')]
 class MemberController extends AbstractController
@@ -38,19 +39,26 @@ class MemberController extends AbstractController
 
         $form = $this->createForm(UserFormType::class, $user);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image')->getData();
+            $imageFile = $form->get('profilePicture')->getData();
             if ($imageFile) {
+                $oldImage = $user->getProfilePicture();
+                $profilePicturesDirectory = $this->getParameter('profile_pictures_directory');
                 $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+
                 try {
-                    $imageFile->move(
-                        $this->getParameter(' profile_pictures_directory'),
-                        $newFilename
-                    );
-                } catch (Exception) {
+                    $imageFile->move($profilePicturesDirectory, $newFilename);
+                    if ($oldImage && file_exists($profilePicturesDirectory . '/' . $oldImage)) {
+                        $filesystem = new Filesystem();
+                        $filesystem->remove($profilePicturesDirectory . '/' . $oldImage);
+                    }
+                    $user->setProfilePicture($newFilename);
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur lors de la gestion de l\'image : ' . $e->getMessage());
                 }
-                $user->setImage($newFilename);
             }
+
             $entityManager->flush();
             return $this->redirectToRoute('app_users_details', ['id' => $user->getId()]);
         }

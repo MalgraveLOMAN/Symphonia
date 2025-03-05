@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Filesystem\Filesystem;
+
 
 #[Route('/events', name: 'app_event_')]
 class EventController extends AbstractController
@@ -68,12 +70,10 @@ class EventController extends AbstractController
     public function edit(int $id, EventRepository $eventRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = $eventRepository->find($id);
-
         if (!$event) {
             throw $this->createNotFoundException('Event non trouvé pour l\'ID ' . $id);
         }
         $currentUser = $this->getUser();
-
         if ($currentUser !== $event->getOrganizer()) {
             return $this->redirectToRoute('app_event_details', ['id' => $event->getId()]);
         }
@@ -82,16 +82,21 @@ class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
+                $oldImage = $event->getImage();
+                $eventPicturesDirectory = $this->getParameter('event_pictures_directory');
                 $newFilename = uniqid() . '.' . $imageFile->guessExtension();
                 try {
-                    $imageFile->move(
-                        $this->getParameter('event_pictures_directory'),
-                        $newFilename
-                    );
-                } catch (Exception) {
+                    $imageFile->move($eventPicturesDirectory, $newFilename);
+                    if ($oldImage && file_exists($eventPicturesDirectory . '/' . $oldImage)) {
+                        $filesystem = new Filesystem();
+                        $filesystem->remove($eventPicturesDirectory . '/' . $oldImage);
+                    }
+                    $event->setImage($newFilename);
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur lors de la gestion de l\'image : ' . $e->getMessage());
                 }
-                $event->setImage($newFilename);
             }
+
             $entityManager->persist($event);
             $entityManager->flush();
             return $this->redirectToRoute('app_event_details', ['id' => $event->getId()]);
