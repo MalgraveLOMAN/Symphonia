@@ -10,7 +10,7 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/artists', name: 'app_artist_')]
 class ArtistController extends AbstractController
@@ -51,6 +51,20 @@ class ArtistController extends AbstractController
         $form = $this->createForm(ArtistFormType::class, $artist);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('artist_pictures_directory'),
+                        $newFilename
+                    );
+                } catch (Exception) {
+                }
+
+                $artist->setImage($newFilename);
+            }
             $entityManager->flush();
             return $this->redirectToRoute('app_artist_details', ['id' => $artist->getId()]);
         }
@@ -60,7 +74,6 @@ class ArtistController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 
     #[Route('/new', name: 'new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

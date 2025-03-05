@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\User;
 use App\Form\EventFormType;
 use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,7 +11,7 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/events', name: 'app_event_')]
 class EventController extends AbstractController
@@ -39,6 +40,30 @@ class EventController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/participate', name: 'participate', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function participate(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+
+        $participate = $request->get('participate');
+
+        /* @var User $currentUser */
+        $currentUser = $this->getUser();
+        if ($participate === '1') {
+            if (!$event->getParticipants()->contains($currentUser)) {
+                $event->addParticipant($currentUser);
+                $entityManager->persist($event);
+                $entityManager->flush();
+            }
+        } elseif ($participate === '0') {
+            if ($event->getParticipants()->contains($currentUser)) {
+                $event->removeParticipant($currentUser);
+                $entityManager->persist($event);
+                $entityManager->flush();
+            }
+        }
+        return $this->redirectToRoute('app_event_details', ['id' => $event->getId()]);
+    }
+
     #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'])]
     public function edit(int $id, EventRepository $eventRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -55,6 +80,19 @@ class EventController extends AbstractController
         $form = $this->createForm(EventFormType::class, $event);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                try {
+                    $imageFile->move(
+                        $this->getParameter('event_pictures_directory'),
+                        $newFilename
+                    );
+                } catch (Exception) {
+                }
+                $event->setImage($newFilename);
+            }
+            $entityManager->persist($event);
             $entityManager->flush();
             return $this->redirectToRoute('app_event_details', ['id' => $event->getId()]);
         }
@@ -70,12 +108,11 @@ class EventController extends AbstractController
     {
         $event = new Event();
         $form = $this->createForm(EventFormType::class, $event);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /* @var $organizer User */
             $organizer = $this->getUser();
-
             $event->setOrganizer($organizer);
             $event->addParticipant($organizer);
             $imageFile = $form->get('image')->getData();
@@ -92,10 +129,10 @@ class EventController extends AbstractController
                 }
 
                 $event->setImage($newFilename);
-                $entityManager->persist($event);
-                $entityManager->flush();
-            }
 
+            }
+            $entityManager->persist($event);
+            $entityManager->flush();
 
             return $this->redirectToRoute('app_event_index');
         }

@@ -7,7 +7,7 @@
         <h1>{{ event.name }}</h1>
 
         {% if event.organizer %}
-            {{ event.organizer.name }}</p>
+            <p>{{ event.organizer.name }}</p>
         {% else %}
             <p><em>Aucun organisateur spécifié.</em></p>
         {% endif %}
@@ -33,7 +33,7 @@
         {% if event.image %}
             <div>
                 <img src="{{ asset('uploads/event_pictures/' ~ event.image) }}"
-                     alt="{{ event.name }}"
+                     alt="{{ event.name }}">
             </div>
         {% else %}
             <p><em>Aucune image disponible.</em></p>
@@ -56,6 +56,17 @@
             <a href="{{ path('app_event_edit', {'id': event.id}) }}">
                 Edit Event
             </a>
+        {% endif %}
+        {% if event.participants.contains(app.user) %}
+            <form method="post" action="{{ path('app_event_participate', {'id': event.id}) }}">
+                <input type="hidden" name="participate" value="0">
+                <button type="submit">Se désinscrire de l'événement</button>
+            </form>
+        {% else %}
+            <form method="post" action="{{ path('app_event_participate', {'id': event.id}) }}">
+                <input type="hidden" name="participate" value="1">
+                <button type="submit">Participer à l'événement</button>
+            </form>
         {% endif %}
         <a href="{{ path('app_event_index') }}" class="btn btn-secondary mt-3">
             Retour à la liste des événements

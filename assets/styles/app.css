@@ -45,19 +45,6 @@ form {
     flex-direction: column;
 }
 
-.btn {
-    background: #ff4500;
-    border: none;
-    padding: 10px;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn:hover {
-    background: #d63b00;
-}
 
 p {
     margin-top: 1rem;
