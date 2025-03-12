@@ -9,17 +9,17 @@ body {
     flex-direction: column;
     min-height: 100vh;
     background: linear-gradient(
-            135deg,
+            /*135deg,*/
             #410445 0%,
             #ff00ff 25%,
-            #00ffff 75%,
-            #000000 100%
+            #00ffff 75%
+            /*#000000 100%*/
     );
     background-size: 200% 200%;
-    animation: discoFlow 10s ease infinite;
+    animation: wave 10s ease infinite;
 }
 
-@keyframes discoFlow {
+@keyframes wave {
     0% {
         background-position: 0% 0%;
     }
