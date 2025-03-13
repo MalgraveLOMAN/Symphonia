@@ -18,14 +18,22 @@ use Symfony\Component\Filesystem\Filesystem;
 class ArtistController extends AbstractController
 {
     #[Route('', name: 'index')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request,EntityManagerInterface $entityManager): Response
     {
-        $artists = $entityManager->getRepository(Artist::class)->findAll();
+        $searchTerm = $request->query->get('artiste');
+
+        if ($searchTerm) {
+            $artists = $entityManager->getRepository(Artist::class)->findByName($searchTerm);
+        } else {
+            $artists = $entityManager->getRepository(Artist::class)->findAll();
+        }
 
         return $this->render('artists/index.html.twig', [
             'artists' => $artists,
         ]);
     }
+
+
 
     #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'])]
     public function show(int $id, ArtistRepository $artistRepository): Response

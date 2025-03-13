@@ -5,6 +5,11 @@
 {% block body %}
     <div>
         <h1>Liste des artistes</h1>
+        <form method="GET" action="">
+            <label>Rechercer un artiste</label>
+            <input type="text" name="artiste">
+            <input type="submit" value="Recherer">
+        </form>
         {% if artists is empty %}
             <p>Aucun artiste trouvé.</p>
         {% else %}

@@ -5,7 +5,9 @@
 {% block body %}
     {% if user %}
         {% include 'partials/_new_event.html.twig' %}
-        {% include 'partials/_new_artist.html.twig' %}
+        {% if is_granted('ROLE_ADMIN') %}
+            {% include 'partials/_new_artist.html.twig' %}
+        {% endif %}
         {% if participatedEvents|length > 0 %}
             <h3>Vous êtes inscrits aux évènements suivants : </h3>
             <ul>
