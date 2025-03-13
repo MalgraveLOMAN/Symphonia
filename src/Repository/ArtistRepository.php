@@ -15,9 +15,6 @@ class ArtistRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Artist::class);
     }
-
-    /*
-     *
      public function findArtistsByEvent(int $eventId): array
     {
         return $this->createQueryBuilder('a')
@@ -33,13 +30,13 @@ class ArtistRepository extends ServiceEntityRepository
         return $this->find($id);
     }
 
-    public function findArtistsByName(string $name): array
+    public function findByName(string $name): array
     {
         return $this->createQueryBuilder('a')
-            ->where('a.nom LIKE :name')
-            ->setParameter('name', '%' . $name . '%')
+            ->where('LOWER(a.name) LIKE LOWER(:name)')
+            ->setParameter('name', strtolower($name) . '%')
             ->getQuery()
             ->getResult();
     }
-    */
+
 }
