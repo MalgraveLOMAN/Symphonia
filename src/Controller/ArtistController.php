@@ -10,7 +10,9 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Filesystem\Filesystem;
+
 
 #[Route('/artists', name: 'app_artist_')]
 class ArtistController extends AbstractController
@@ -43,14 +45,30 @@ class ArtistController extends AbstractController
     public function edit(int $id, ArtistRepository $artistRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $artist = $artistRepository->find($id);
-
         if (!$artist) {
             throw $this->createNotFoundException('Artiste non trouvé pour l\'ID ' . $id);
         }
-
         $form = $this->createForm(ArtistFormType::class, $artist);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $oldImage = $artist->getImage();
+                $artistPicturesDirectory = $this->getParameter('artist_pictures_directory');
+
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                try {
+                    $imageFile->move($artistPicturesDirectory, $newFilename);
+                    if ($oldImage && file_exists($artistPicturesDirectory . '/' . $oldImage)) {
+                        $filesystem = new Filesystem();
+                        $filesystem->remove($artistPicturesDirectory . '/' . $oldImage);
+                    }
+                    $artist->setImage($newFilename);
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur lors de la gestion de l\'image : ' . $e->getMessage());
+                }
+            }
+
             $entityManager->flush();
             return $this->redirectToRoute('app_artist_details', ['id' => $artist->getId()]);
         }
@@ -60,7 +78,6 @@ class ArtistController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 
     #[Route('/new', name: 'new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

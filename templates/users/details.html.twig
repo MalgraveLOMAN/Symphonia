@@ -5,10 +5,7 @@
 {% block body %}
     <div>
         <h1>{{ user.name }}</h1>
-        <p>ID : {{ user.id }}</p>
-        {{ user.name }}
         {{ user.email }}
-        {{ user.profilePicture }}
         <div>
             <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}"
                  alt="{{ user.name }}">
