@@ -68,28 +68,21 @@ class EventController extends AbstractController
     #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'])]
     public function delete(int $id, EventRepository $eventRepository, EntityManagerInterface $entityManager): Response
     {
-        // Récupérer l'événement à supprimer
         $event = $eventRepository->find($id);
 
-        // Vérifier si l'événement existe
         if (!$event) {
             throw $this->createNotFoundException('Event non trouvé pour l\'ID ' . $id);
         }
 
-        // Récupérer l'utilisateur actuel
         $currentUser = $this->getUser();
 
-        // Vérifier si l'utilisateur actuel est l'organisateur de l'événement
         if ($currentUser !== $event->getOrganizer()) {
-            // Rediriger vers la page de détails de l'événement si l'utilisateur n'est pas l'organisateur
             return $this->redirectToRoute('app_event_details', ['id' => $event->getId()]);
         }
 
-        // Supprimer l'événement
         $entityManager->remove($event);
         $entityManager->flush();
 
-        // Rediriger vers une page de confirmation ou la liste des événements
         return $this->redirectToRoute('app_event_index');
     }
 
