@@ -6,6 +6,7 @@ use App\Repository\ArtistRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ArtistRepository::class)]
 class Artist
@@ -13,18 +14,23 @@ class Artist
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['artist:read', 'event:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['artist:read', 'event:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['artist:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['artist:read'])]
     private ?string $image = null;
 
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'artists')]
+    #[Groups(['artist:read'])]
     private Collection $events;
 
     public function __construct()
