@@ -108,6 +108,27 @@ class EventController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'])]
+    public function delete(int $id, EventRepository $eventRepository, EntityManagerInterface $entityManager): Response
+    {
+        $event = $eventRepository->find($id);
+
+        if (!$event) {
+            throw $this->createNotFoundException('Event non trouvé pour l\'ID ' . $id);
+        }
+
+        $currentUser = $this->getUser();
+
+        if ($currentUser !== $event->getOrganizer()) {
+            return $this->redirectToRoute('app_event_details', ['id' => $event->getId()]);
+        }
+
+        $entityManager->remove($event);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_event_index');
+    }
+
     #[Route('/new', name: 'new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

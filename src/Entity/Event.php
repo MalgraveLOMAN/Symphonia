@@ -7,7 +7,7 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
@@ -15,31 +15,39 @@ class Event
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['event:read', 'artist:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['event:read', 'artist:read'])]
     private string $name;
 
     #[ORM\Column(type: 'date')]
+    #[Groups(['event:read'])]
     private DateTimeInterface $date;
 
     #[ORM\Column(type: 'text')]
+    #[Groups(['event:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['event:read'])]
     private ?string $location = null;
 
-
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['event:read'])]
     private ?string $image = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'organizedEvents')]
+    #[Groups(['event:read'])]
     private ?User $organizer = null;
 
     #[ORM\ManyToMany(targetEntity: Artist::class, inversedBy: 'events')]
+    #[Groups(['event:read'])]
     private Collection $artists;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'participatedEvents')]
+    #[Groups(['event:read'])]
     private Collection $participants;
 
     public function __construct()
@@ -107,7 +115,14 @@ class Event
         if (!$this->artists->contains($artist)) {
             $this->artists->add($artist);
             $artist->addEvent($this);
+        }
+        return $this;
+    }
 
+    public function removeArtist(Artist $artist): self
+    {
+        if ($this->artists->removeElement($artist)) {
+            $artist->removeEvent($this);
         }
         return $this;
     }
@@ -130,16 +145,6 @@ class Event
     {
         if ($this->participants->removeElement($user)) {
             $user->removeParticipatedEvent($this);
-        }
-        return $this;
-    }
-
-    public function removeArtist(Artist $artist): self
-    {
-        if ($this->artists->contains($artist)) {
-            $this->artists->removeElement($artist);
-            $artist->removeEvent($this);
-            return $this;
         }
         return $this;
     }
