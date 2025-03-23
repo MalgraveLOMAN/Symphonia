@@ -3,12 +3,13 @@
 {% block title %}Symphonia - Home{% endblock %}
 
 {% block body %}
-    <h1>Index</h1>
     {% if user %}
         {% include 'partials/_new_event.html.twig' %}
-        {% include 'partials/_new_artist.html.twig' %}
+        {% if is_granted('ROLE_ADMIN') %}
+            {% include 'partials/_new_artist.html.twig' %}
+        {% endif %}
         {% if participatedEvents|length > 0 %}
-            <h3>Events inscrits : :</h3>
+            <h3>Vous êtes inscrits aux évènements suivants : </h3>
             <ul>
                 {% for event in participatedEvents %}
                     <li>
@@ -19,9 +20,10 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p>You are not participating in any events yet.</p>
+            <p>Ne participez pas encore à un évènement</p>
         {% endif %}
-    {% else %}
-        <p>Please log in to see your events.</p>
+        {% else %}
+
+            <p>Vous n'êtes pas connecté</p>
     {% endif %}
 {% endblock %}
