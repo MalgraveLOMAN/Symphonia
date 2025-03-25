@@ -10,7 +10,10 @@
             <input type="text" name="artiste">
             <input type="submit" value="Recherer">
         </form>
-        {% include 'partials/_new_artist.html.twig' %}
+        {% if is_granted('ROLE_ADMIN') %}
+                    {% include 'partials/_new_artist.html.twig' %}
+        {% endif %}
+
 
         {% if artists is empty %}
             <p>Aucun artiste trouvé.</p>
