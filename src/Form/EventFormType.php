@@ -32,7 +32,7 @@ class EventFormType extends AbstractType
             ->add('description')
             ->add('location')
             ->add('image', FileType::class, [
-                'label' => 'Image de l\'artiste',
+                'label' => 'Image de l\'event',
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
