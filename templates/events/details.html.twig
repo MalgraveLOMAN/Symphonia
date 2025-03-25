@@ -71,6 +71,22 @@
                 <button type="submit">Participer à l'événement</button>
             </form>
         {% endif %}
+        {% if event.participants is not empty %}
+            <div id="artist-list">
+                <h2>Liste des participants </h2>
+                <ul>
+                    {% for participant in event.participants %}
+                        <li>
+                            <a href="{{ path('app_users_details', {'id': participant.id}) }}">
+                                <p>{{ participant.name }}</p>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <p><em>Aucun artiste</em></p>
+        {% endif %}
         <a href="{{ path('app_event_index') }}" class="btn btn-secondary mt-3">
             Retour à la liste des événements
         </a>

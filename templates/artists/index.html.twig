@@ -10,6 +10,8 @@
             <input type="text" name="artiste">
             <input type="submit" value="Recherer">
         </form>
+        {% include 'partials/_new_artist.html.twig' %}
+
         {% if artists is empty %}
             <p>Aucun artiste trouvé.</p>
         {% else %}

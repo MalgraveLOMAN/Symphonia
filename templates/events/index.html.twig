@@ -5,6 +5,7 @@
 {% block body %}
     <div>
         <h1>Liste des Events</h1>
+        {% include 'partials/_new_event.html.twig' %}
         {% if events is empty %}
             <p>Aucun Event trouvé.</p>
         {% else %}
