@@ -1,9 +1,72 @@
+# config/packages/nelmio_api_doc.yaml
 nelmio_api_doc:
     documentation:
         info:
-            title: My App
-            description: This is an awesome app!
+            title: Symphonia API
+            description: Symphonia API Documentation
             version: 1.0.0
-    areas: # to filter documented areas
+        components:
+            schemas:
+                Event:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: "Identifiant de l'événement"
+                        name:
+                            type: string
+                            description: "Nom de l'événement"
+                        date:
+                            type: string
+                            format: date-time
+                            description: "Date de l'événement"
+                        description:
+                            type: string
+                            description: "Description de l'événement"
+                        location:
+                            type: string
+                            description: "Lieu de l'événement"
+                        image:
+                            type: string
+                            nullable: true
+                            description: "URL de l'image de l'événement"
+                        organizer:
+                            type: array
+                            items:
+                                type: object
+                            description: "Organisateurs de l'événement"
+                        artists:
+                            type: array
+                            items:
+                                type: object
+                            description: "Artistes participant à l'événement"
+                        participants:
+                            type: array
+                            items:
+                                type: array
+                                items:
+                                    type: object
+                            description: "Participants à l'événement"
+                Artist:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: "Identifiant de l'artiste"
+                        name:
+                            type: string
+                            description: "Nom de l'artiste"
+                        description:
+                            type: string
+                            description: "Description de l'artiste"
+                        image:
+                            type: string
+                            description: "URL de l'image de l'artiste"
+                        events:
+                            type: array
+                            items:
+                                type: object
+                            description: "Événements associés à l'artiste"
+    areas:
         path_patterns:
-            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+            - ^/api(?!/doc)
