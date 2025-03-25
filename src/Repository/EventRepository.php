@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @extends ServiceEntityRepository<Event>
@@ -16,7 +17,6 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
-    /*
         public function findEventById(int $id): ?Event
         {
             return $this->find($id);
@@ -76,5 +76,14 @@ class EventRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
         }
-        */
+
+    public function findByDate($date): array
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.date >= :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
+    }
+
 }

@@ -19,9 +19,16 @@ use Symfony\Component\Filesystem\Filesystem;
 class EventController extends AbstractController
 {
     #[Route('', name: 'index')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $events = $entityManager->getRepository(Event::class)->findAll();
+        $searchTerm = $request->query->get('date');
+
+        if ($searchTerm) {
+            $events = $entityManager->getRepository(Event::class)->findByDate($searchTerm);
+        } else {
+            $events = $entityManager->getRepository(Event::class)->findAll();
+        }
+
 
         return $this->render('Events/index.html.twig', [
             'events' => $events,
